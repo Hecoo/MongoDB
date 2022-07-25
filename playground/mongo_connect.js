@@ -9,13 +9,13 @@ let { MongoClient, ObjectID } = require("mongodb");
 // let { name } = obj;
 // console.log(name);
 
-MongoClient.connect("mongodb://127.0.0.1:27017/TodoApp", (err, db) => {
+MongoClient.connect("mongodb://127.0.0.1:27017/test", (err, db) => {
   if (err) {
     console.log("unable to connect to mongoDB Servers");
   } else {
     console.log("connected to MongoDB server");
   }
-  db.collection("Todos").insertOne(
+  db.collection("Todo").insertOne(
     {
       text: "Something to do",
       Completed: false,
