@@ -8,7 +8,6 @@ let { usermodel } = require("./models/Users.js");
 
 let app = express();
 let port = process.env.PORT || 3000;
-console.log(process.env);
 
 app.use(bodyparser.json());
 
@@ -72,6 +71,26 @@ app.get("/todo/:id", (req, res) => {
       })
       .catch((err) => {
         res.send({});
+      });
+  }
+});
+
+app.delete("/todo/:id", (req, res) => {
+  let id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    res.status(404).send();
+  } else {
+    usermodel
+      .findByIdAndRemove(id)
+      .then((result) => {
+        if (result) {
+          res.send({ result });
+        } else {
+          res.status(404).send();
+        }
+      })
+      .catch((err) => {
+        res.send();
       });
   }
 });
