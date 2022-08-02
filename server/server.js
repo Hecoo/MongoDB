@@ -80,8 +80,7 @@ app.delete("/todo/:id", (req, res) => {
   if (!ObjectID.isValid(id)) {
     res.status(404).send();
   } else {
-    usermodel
-      .findByIdAndRemove(id)
+    Todomodel.findByIdAndRemove(id)
       .then((result) => {
         if (result) {
           res.send({ result });
