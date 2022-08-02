@@ -1,3 +1,4 @@
+let _ = require("lodash");
 let express = require("express");
 let bodyparser = require("body-parser");
 let { ObjectID } = require("mongodb");
@@ -90,6 +91,33 @@ app.delete("/todo/:id", (req, res) => {
       })
       .catch((err) => {
         res.send();
+      });
+  }
+});
+
+app.patch("/todo/:id", (req, res) => {
+  let id = req.params.id;
+  let body = _.pick(req.body, ["text", "completed"]); // let the user update the things we choose
+  if (!ObjectID.isValid(id)) {
+    res.status(404).send();
+  } else {
+    if (_.isBoolean(body.completed) && body.completed) {
+      // updated the completedAt property based on completed property
+      body.completedAt = new Date().getTime();
+    } else {
+      body.completed = false;
+      body.completedAt = null;
+    }
+    Todomodel.findByIdAndUpdate(id, { $set: body }, { new: true })
+      .then((todo) => {
+        if (todo) {
+          res.status(200).send({ todo });
+        } else {
+          res.status(404).send();
+        }
+      })
+      .catch((err) => {
+        res.status(404).send(err);
       });
   }
 });
