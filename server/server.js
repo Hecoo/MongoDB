@@ -6,6 +6,7 @@ let { ObjectID } = require("mongodb");
 let { mongoose } = require("./db/mongoose.js");
 let { Todomodel } = require("./models/todo");
 let { usermodel } = require("./models/Users.js");
+const { userLogin } = require("./models/userLogin.js");
 
 let app = express();
 let port = process.env.PORT || 3000;
@@ -120,6 +121,23 @@ app.patch("/todo/:id", (req, res) => {
         res.status(404).send(err);
       });
   }
+});
+
+app.post("/userLogin", (req, res) => {
+  // console.log(req.body);
+  let body = _.pick(req.body, ["email", "password"]);
+  let user = new userLogin(body);
+  user
+    .save()
+    .then(() => {
+      return user.generateAuthToken();
+    })
+    .then((token) => {
+      res.header("x-auth", token).send(user);
+    })
+    .catch((err) => {
+      res.status(404).send(err);
+    });
 });
 
 app.listen(port, () => {
