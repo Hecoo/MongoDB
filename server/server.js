@@ -14,24 +14,23 @@ let port = process.env.PORT || 3000;
 
 app.use(bodyparser.json());
 
-app.post("/users", (req, res) => {
-  // console.log(req.body);
-  let newuser = new usermodel({
-    text: req.body.text,
-    completed: req.body.completed,
-    completedAt: req.body.completedAt,
-  });
+// app.post("/users", (req, res) => {
+//   // console.log(req.body);
+//   let newuser = new usermodel({
+//     text: req.body.text,
+//     completed: req.body.completed,
+//     completedAt: req.body.completedAt,
+//   });
 
-  newuser.save().then(
-    (result) => {
-      res.send(result);
-    },
-    (err) => {
-      res.status(400).send(err);
-    }
-  );
-});
-
+//   newuser.save().then(
+//     (result) => {
+//       res.send(result);
+//     },
+//     (err) => {
+//       res.status(400).send(err);
+//     }
+//   );
+// });
 app.post("/todo", (req, res) => {
   // console.log(req.body);
   let newtodo = new Todomodel({
@@ -137,7 +136,7 @@ app.post("/userLogin", (req, res) => {
       res.header("x-auth", token).send(user);
     })
     .catch((err) => {
-      res.status(404).send(err);
+      res.status(400).send(err);
     });
 });
 
