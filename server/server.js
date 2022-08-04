@@ -7,6 +7,7 @@ let { mongoose } = require("./db/mongoose.js");
 let { Todomodel } = require("./models/todo");
 let { usermodel } = require("./models/Users.js");
 const { userLogin } = require("./models/userLogin.js");
+let { authenticate } = require("./Middleware/authenticate.js");
 
 let app = express();
 let port = process.env.PORT || 3000;
@@ -140,6 +141,10 @@ app.post("/userLogin", (req, res) => {
     });
 });
 
+app.get("/userLogin/me", authenticate, (req, res) => {
+  res.send(req.user);
+});
+
 app.listen(port, () => {
   console.log(`app is listening  on port ${port}`);
 });
@@ -147,26 +152,3 @@ app.listen(port, () => {
 module.exports = {
   app,
 };
-// let newUsermodel = new usermodel({ text: "Playing Football" });
-
-// newUsermodel.save().then(
-//   (res) => {
-//     console.log(res);
-//   },
-//   (err) => {
-//     console.log(err);
-//   }
-// );
-
-// //////////////////////////////////////////////////////////////////////////
-
-// let newModel_2 = new usermodel({ text: "Baby Cool" }); // creating new instance
-
-// newModel_2.save().then(
-//   (res) => {
-//     console.log(res);
-//   },
-//   (err) => {
-//     console.log(err);
-//   }
-// );
