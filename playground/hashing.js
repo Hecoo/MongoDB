@@ -17,6 +17,11 @@ let hashedPassword =
 bcrypt.compare(password, hashedPassword, (err, res) => {
   console.log(res);
 });
+
+
+
+
+
 let data = {
   id: 10,
 };
