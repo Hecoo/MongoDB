@@ -288,3 +288,26 @@ describe("POST  /userLogin/Login", () => {
       });
   });
 });
+
+describe("Deleting userLogin/me/token", () => {
+  it("should delete the auth token on logout", (done) => {
+    request(app)
+      .delete("/userLogin/me/token")
+      .set("x-auth", insertedUsers[0].tokens[0].token)
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        userLogin
+          .findById(insertedUsers[0]._id)
+          .then((user) => {
+            expect(user.tokens.length).toBe(0);
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
+      });
+  });
+});
