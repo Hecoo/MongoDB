@@ -15,6 +15,10 @@ let Todomodel = mongoose.model("Todos", {
     type: Number,
     default: null,
   },
+  _creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
 });
 
 module.exports = {

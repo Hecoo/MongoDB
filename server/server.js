@@ -31,10 +31,11 @@ app.use(bodyparser.json());
 //     }
 //   );
 // });
-app.post("/todo", (req, res) => {
+app.post("/todo", authenticate, (req, res) => {
   // console.log(req.body);
   let newtodo = new Todomodel({
     text: req.body.text,
+    _creator: req.user._id,
   });
   newtodo.save().then(
     (result) => {
@@ -46,8 +47,8 @@ app.post("/todo", (req, res) => {
   );
 });
 
-app.get("/todo", (req, res) => {
-  Todomodel.find().then(
+app.get("/todo", authenticate, (req, res) => {
+  Todomodel.find({ _creator: req.user._id }).then(
     (result) => {
       res.send({ result, code: "232A" });
     },
@@ -57,13 +58,16 @@ app.get("/todo", (req, res) => {
   );
 });
 
-app.get("/todo/:id", (req, res) => {
+app.get("/todo/:id", authenticate, (req, res) => {
   let id = req.params.id;
   //valid id using is-valid
   if (!ObjectID.isValid(id)) {
     res.status(404).send();
   } else {
-    Todomodel.findById(id) // findById
+    Todomodel.findOne({
+      _id: id,
+      _creator: req.user._id,
+    }) // findOne
       .then((todo) => {
         if (todo) {
           res.send({ todo });
@@ -77,26 +81,27 @@ app.get("/todo/:id", (req, res) => {
   }
 });
 
-app.delete("/todo/:id", (req, res) => {
+app.delete("/todo/:id", authenticate, (req, res) => {
   let id = req.params.id;
   if (!ObjectID.isValid(id)) {
-    res.status(404).send();
-  } else {
-    Todomodel.findByIdAndRemove(id)
-      .then((result) => {
-        if (result) {
-          res.send({ result });
-        } else {
-          res.status(404).send();
-        }
-      })
-      .catch((err) => {
-        res.send();
-      });
+    return res.status(404).send();
   }
+  Todomodel.findOneAndRemove({
+    _id: id,
+    _creator: req.user._id,
+  })
+    .then((result) => {
+      if (!result) {
+        return res.status(404).send();
+      }
+      res.send({ result });
+    })
+    .catch((err) => {
+      res.status(400).send();
+    });
 });
 
-app.patch("/todo/:id", (req, res) => {
+app.patch("/todo/:id", authenticate, (req, res) => {
   let id = req.params.id;
   let body = _.pick(req.body, ["text", "completed"]); // let the user update the things we choose
   if (!ObjectID.isValid(id)) {
@@ -109,7 +114,11 @@ app.patch("/todo/:id", (req, res) => {
       body.completed = false;
       body.completedAt = null;
     }
-    Todomodel.findByIdAndUpdate(id, { $set: body }, { new: true })
+    Todomodel.findOneAndUpdate(
+      { _id: id, _creator: req.user._id },
+      { $set: body },
+      { new: true }
+    )
       .then((todo) => {
         if (todo) {
           res.status(200).send({ todo });

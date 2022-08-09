@@ -23,6 +23,14 @@ let insertedUsers = [
     _id: userTwoId,
     email: "Jen@example.com",
     password: "userTwoPass",
+    tokens: [
+      {
+        access: "auth",
+        token: jwt
+          .sign({ _id: userTwoId, access: "auth" }, "abc123")
+          .toString(),
+      },
+    ],
   },
 ];
 
@@ -30,12 +38,14 @@ let insertedtodos = [
   {
     _id: new ObjectID(),
     text: "first test todo",
+    _creator: userOneId,
   },
   {
     _id: new ObjectID(),
     text: "Second test todo",
     completed: true,
     completedAt: 333,
+    _creator: userTwoId,
   },
 ];
 
