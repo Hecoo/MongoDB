@@ -3,34 +3,32 @@ let { SHA256 } = require("crypto-js");
 let jwt = require("jsonwebtoken");
 let bcrypt = require("bcryptjs");
 
-let password = "123abc";
+// let password = "123abc";
 
-bcrypt.genSalt(10, (err, salt) => {
-  bcrypt.hash(password, salt, (err, hash) => {
-    console.log(hash);
-  });
-});
+// bcrypt.genSalt(10, (err, salt) => {
+//   bcrypt.hash(password, salt, (err, hash) => {
+//     console.log(hash);
+//   });
+// });
 
-let hashedPassword =
-  "$2a$10$FWq/4vSV5IS9QGpbh28sru.9/HjMj.n0XZ0p/2nDHRgrmpEyiBYKK";
+// let hashedPassword =
+//   "$2a$10$FWq/4vSV5IS9QGpbh28sru.9/HjMj.n0XZ0p/2nDHRgrmpEyiBYKK";
 
-bcrypt.compare(password, hashedPassword, (err, res) => {
-  console.log(res);
-});
-
-
-
-
+// bcrypt.compare(password, hashedPassword, (err, res) => {
+//   console.log(res);
+// });
 
 let data = {
   id: 10,
 };
 
-let token = jwt.sign(data, "ABC");
-console.log(token);
+let token = jwt.sign(data, "ABC"); // it takes the data and the secret and create that hashed token
+console.log("token :", token);
 
-let decodedResult = jwt.verify(token, "ABC");
-console.log(decodedResult);
+let decodedResult = jwt.verify(token, "ABC"); // it takes that token and the secret to make sure that the data was not manipulation
+console.log(decodedResult); // iat-> issued at
+
+// we can use sha256 and do these of the stuff but we could use JWT library
 // let message = "i'm user number 3";
 
 // let hash = SHA256(message).toString();

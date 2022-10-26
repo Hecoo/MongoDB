@@ -5,7 +5,6 @@ let { ObjectID } = require("mongodb");
 
 let { mongoose } = require("./db/mongoose.js");
 let { Todomodel } = require("./models/todo");
-let { usermodel } = require("./models/Users.js");
 const { userLogin } = require("./models/userLogin.js");
 let { authenticate } = require("./Middleware/authenticate.js");
 
@@ -62,7 +61,7 @@ app.get("/todo/:id", authenticate, (req, res) => {
   let id = req.params.id;
   //valid id using is-valid
   if (!ObjectID.isValid(id)) {
-    res.status(404).send();
+    return res.status(404).send();
   } else {
     Todomodel.findOne({
       _id: id,
@@ -130,6 +129,7 @@ app.patch("/todo/:id", authenticate, (req, res) => {
       });
   }
 });
+
 // For sign up users
 app.post("/userLogin", async (req, res) => {
   // console.log(req.body);

@@ -1,7 +1,7 @@
 // let MongoClient = require("mongodb").MongoClient;
 let { MongoClient, ObjectID } = require("mongodb");
 
-MongoClient.connect("mongodb://127.0.0.1:27017/TodoApp", (err, db) => {
+MongoClient.connect("mongodb://127.0.0.1:27017/test", (err, db) => {
   if (err) {
     console.log("unable to connect to mongoDB Servers");
   } else {
@@ -15,9 +15,9 @@ MongoClient.connect("mongodb://127.0.0.1:27017/TodoApp", (err, db) => {
   //     .then((res) => {
   //       console.log(res);
   //     });
-  db.collection("Users")
+  db.collection("Todo")
     .findOneAndDelete({
-      _id: new ObjectID("62dd315d51bbc037242b4f3b"),
+      _id: new ObjectID("635804654592b600e890ec71"),
     })
     .then((res) => {
       console.log(res);
@@ -55,5 +55,5 @@ MongoClient.connect("mongodb://127.0.0.1:27017/TodoApp", (err, db) => {
   //       console.log(res);
   //     });
 
-  // db.close();
+  db.close();
 });

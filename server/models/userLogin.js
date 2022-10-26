@@ -14,7 +14,7 @@ let UserSchema = new mongoose.Schema({
     unique: true,
     validate: {
       validator: validator.isEmail,
-      message: `{value} is not a Valid Email`,
+      message: `this email is not a Valid`,
     },
   },
   password: {
@@ -48,9 +48,9 @@ UserSchema.methods.generateAuthToken = function () {
   let user = this;
   let access = "auth";
   let token = jwt
-    .sign({ _id: user._id.toHexString(), access }, "abc123")
+    .sign({ _id: user._id.toHexString(), access: access }, "abc123")
     .toString();
-  user.tokens.push({ access, token });
+  user.tokens.push({ access: access, token: token });
   return user.save().then(() => {
     return token;
   });
@@ -58,7 +58,7 @@ UserSchema.methods.generateAuthToken = function () {
 
 UserSchema.statics.findByToken = function (token) {
   // for taking the auth token and verify it
-  let userLogin = this;
+  let User = this;
   let decoded;
   try {
     decoded = jwt.verify(token, "abc123");
@@ -68,7 +68,7 @@ UserSchema.statics.findByToken = function (token) {
     // });
     return Promise.reject("Unauthorized");
   }
-  return userLogin.findOne({
+  return User.findOne({
     _id: decoded._id,
     "tokens.token": token,
     "tokens.access": "auth",
@@ -91,6 +91,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
     });
   });
 };
+
 UserSchema.methods.removeToken = function (token) {
   let user = this;
   return user.update({
@@ -102,6 +103,7 @@ UserSchema.methods.removeToken = function (token) {
   });
 };
 
+// Mongoose Middleware for hashing password before saving it to the database
 UserSchema.pre("save", function (next) {
   let user = this;
   if (user.isModified("password")) {
@@ -121,3 +123,7 @@ let userLogin = mongoose.model("userlogin", UserSchema);
 module.exports = {
   userLogin,
 };
+
+// diff between schema.static and methods both they add mehonds ...
+// the .methods add methods onto the instance of that schema
+// .static add methods onto the model of that schema itself
